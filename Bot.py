@@ -1,5 +1,6 @@
 from collections import  UserDict
 from datetime import datetime
+import pickle 
 
 class Field:
     def __init__(self, value):
@@ -195,8 +196,19 @@ def parse_input(user_input):
     args = parts[1].split() if len(parts) > 1 else [] 
     return command, *args
 
+def save_data(book, filename="addressbook.pkl"):
+    with open(filename, "wb") as f:
+        pickle.dump(book, f)
+
+def load_data(filename="addressbook.pkl"):
+    try:
+        with open(filename, "rb") as f:
+            return pickle.load(f)
+    except FileNotFoundError:
+        return AddressBook() 
+
 def main():
-    book = AddressBook()
+    book = load_data()
     print('''Welcome to the assistant bot!
           - close, exit: Programm is closed
           - hello: Greet
@@ -214,6 +226,7 @@ def main():
 
         if command in ["close", "exit"]:
             print("Good bye!")
+            save_data(book)
             break
 
         elif command == "hello":
